@@ -7,6 +7,7 @@ author:
   - "Gaurish Bansal"
 footer: "IITK"
 affiliation: "IITK"
+prefer-html: true
 format: 
   titlepage-pdf: 
     titlepage: classic-lined 
@@ -68,7 +69,7 @@ editor_options:
 
 Assume that you are in 2004, and you have the responsibility to improve the health policies for the country. This guide is intended to help build analytical capacity to assess the quality of mortality statistics currently being collected to improve their value in informing health policies and programs.
 
-## Introduction: 
+## Introduction:
 
 **Mortality rate** or **Death rate** is a measure of number of deaths (in general, or due to a specific cause) in a particular population, scaled to the size of that population ,per unit of time. Mortality rate is typically expressed in units of deaths per $1,000$ individuals per year; thus a mortality rate of $11.5$ (out of $1,000$) in a population of $1,000$ would mean $11.5$ deaths per year in that entire population, or $1.15%$ out of total. It is distinct from "**morbidity**",which is either the prevalence or incidence of a disease, and also from the incidence rate.
 
@@ -100,7 +101,7 @@ Final death rate data had the following features :
 
 -   5 columns in each data frame representing Country code, Gender, Death rate value, Country, Continent
 
--   453 rows, each country had 3 rows for three different categories: Male, Female and Other
+-   453 rows, each country had 3 rows for three different categories: Male, Female and Both Sexes
 
 GDP and HDI data frames have two columns for country codes and for their respective values.
 
@@ -120,7 +121,7 @@ Human Development Index data was scraped from [countryeconomy.com](https://count
 
 Gross Domestic Product Data was downloaded as a CSV file from [data.worldbank.org](https://data.worldbank.org/indicator/NY.GDP.MKTP.KD.ZG). A total of 181 countries' GDP values for the year 2004 were available.
 
-\## A glimpse of Final Data of Death Rate due to Alcohol use disorders:
+## A glimpse of Final Data of Death Rate due to Alcohol use disorders:
 
 ```{r}
 #| echo: false
@@ -133,7 +134,7 @@ head(Final_data_corrected_2[[1]])
 
 **Possible Bias in the Data :**
 
-1.  There might be some amount of biases aroused in our data due to methods used in the cleaning of data.Initially We had data on the gender-wise death rate for different countries for 18 different causes, but in that data there were many missing observations on the country ,Death Rate,Gender variable of the 18 different dataframes of 18 different causes. So First we subset all the dataframes which contain death rate of countries for **three gender**. Then we subset the 18 dataframes such that they contain the death rate of only the **common countries** by which we get a list of 18 dataframes and each dataframe contains the death rate of 151 countries. So deleting the missing observations will lead to the biases in the data.
+1.  There might be some amount of biases aroused in our data due to methods used in the cleaning of data.Initially We had data on the gender-wise death rate for different countries for 18 different causes, but in that data there were many missing observations on the country ,Death Rate,Gender variable of the 18 different dataframes of 18 different causes. So First we subset all the dataframes which contain death rate of countries for **two gender**. Then we subset the 18 dataframes such that they contain the death rate of only the **common countries** by which we get a list of 18 dataframes and each dataframe contains the death rate of 151 countries. So deleting the missing observations will lead to the biases in the data.
 
 2.  There might have been bias due to lack of proper survey in developing countries in the data on GDP of 2004.
 
@@ -148,7 +149,6 @@ Countries with HDI more than 0.8 are considered to be developed and rest are dev
 Separate gender wise scatter plot for developed and developing countries shows us what role different genders might have in different types of countries
 
 Death rates of diabetes mellitus vs Countries :
-
 ```{r}
 #| echo: false
 load("/Users/pj/Library/CloudStorage/OneDrive-IITKanpur/IITK sem 3/MTH208A/group-project-20/FinalData/Death rates/Final_data_3.Rdata")
@@ -169,7 +169,7 @@ for(i in 1:length(developed$Country.Codes)){
 }
 
 g1 <- ggplot(df[deve,],aes(x=index,y=Death_Rate,color=gender))+geom_point()+coord_cartesian(ylim = c(0, limit))
-g1 <- g1+ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+xlab("Developed Countries")
+g1 <- g1+ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+xlab("Developed Countries")+scale_colour_manual(labels = c("Both Sexes", "Female", "Male"), values = c("Red", "Green","Blue"))
 
 for(i in 1:length(developing$Country.Codes)){
   x<-which(df$index==developing$Country.Codes[i])
@@ -179,7 +179,7 @@ for(i in 1:length(developing$Country.Codes)){
 }
 
 g2 <- ggplot(df[deving,],aes(x=index,y=Death_Rate,color=gender,ylim=limit))+geom_point()+coord_cartesian(ylim = c(0, limit))
-g2 <- g2+ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+xlab("Developing Countries")
+g2 <- g2+ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+xlab("Developing Countries")+scale_colour_manual(labels = c("Both Sexes", "Female", "Male"), values = c("Red", "Green","Blue"))
 
 library("gridExtra")
 grid.arrange(g1, g2, nrow = 2)
@@ -191,7 +191,7 @@ Looking at the plot we can ask the question : *How does socio-economic condition
 
 Gender wise Multiple bar plot of countries in East Mediterranean Countries.
 
-```{r,out.width="75%"}
+```{r,out.width="75%", warning=FALSE,message=FALSE}
 #| echo: false
 cont <- "Eastern Mediterranean" ###
 datasetNUM <- 14 ###
@@ -222,7 +222,7 @@ load("/Users/pj/Library/CloudStorage/OneDrive-IITKanpur/IITK sem 3/MTH208A/group
                                            face="bold.italic"),
                axis.title = element_text(face="bold"),
                axis.text = element_text(face= "bold"))
-  g1<-g1+scale_fill_discrete(labels = c("Others", "Female","Male"))
+  g1<-g1+scale_fill_discrete(labels = c("Both Sexes", "Female","Male"))
   
   
   cont <- "Eastern Mediterranean" ###
@@ -235,7 +235,7 @@ load("/Users/pj/Library/CloudStorage/OneDrive-IITKanpur/IITK sem 3/MTH208A/group
   
 ```
 
-```{r,out.width="75%"}
+```{r,out.width="75%",message=FALSE,warning=FALSE}
 #| echo: false
 cont <- "Eastern Mediterranean" ###
 datasetNUM <- 1 ###
@@ -268,7 +268,7 @@ counts<-c("Egypt","Iraq","Jordan","Lebanon","Libya","Saudi Arabia","Sudan","Soma
                                              face="bold.italic"),
                  axis.title = element_text(face="bold"),
                  axis.text = element_text(face= "bold"))
-  g2<-g2+scale_fill_discrete(labels = c("Others", "Female","Male"))
+  g2<-g2+scale_fill_discrete(labels = c("Both Sexes", "Female","Male"))
   g2
   
 ```
@@ -281,7 +281,7 @@ We can ask the following question from this :
 
 Scatterplot of Death rates of countries along with Linear model plotted with line plot of HDI of various countries
 
-```{r}
+```{r,out.width="110%"}
 #| echo: false
 datasetNUM<-3
 #i<-array(c(49,50,51,52 ,53,54,55,57,58,59,60,61,62,63,64,65,66 ,74))
@@ -313,13 +313,12 @@ scale <- 1/maxd
 g2 <- ggplot(newdf,aes(x=factor(cc,levels = cc[order(HDI)]),y=Death_rate))+geom_point(aes(color=1))+theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),legend.position = "none")+labs(x="Countries (Arranged in Increasing Order of HDI)")
 g2<-g2+stat_smooth(formula = y~x,method="lm",aes(group=1))
 g2 <- g2 +geom_line(aes(y=HDI/scale,color=2,group=1))+scale_y_continuous(sec.axis = sec_axis(~.*scale,name = "HDI (Light Blue Line)"))
-g2<-g2+ theme(plot.title= element_text(size=16, 
-                                       hjust=0.5,
+g2<-g2+ theme(plot.title= element_text(size=16,
                                        face= "bold"),
               legend.title = element_text(size=14,
                                           face="bold.italic"),
               axis.title = element_text(face="bold"),
-              axis.text = element_text(face= "bold"))
+              axis.text = element_text(face= "bold"),text = element_text(size=6))
 g2
 
 
@@ -331,8 +330,6 @@ Colon and rectum cancer death rates showed quite unusual behavior. All the death
 Gender wise Multiple bar plot of Breast cancer in some countries
 
 ```{r}
-
-
 #| echo: false
 cont <- "Europe" ###
 datasetNUM <- 2 ###
@@ -354,8 +351,9 @@ load("/Users/pj/Library/CloudStorage/OneDrive-IITKanpur/IITK sem 3/MTH208A/group
                legend.title = element_text(size=14,
                                            face="bold.italic"),
                axis.title = element_text(face="bold"),
-               axis.text = element_text(face= "bold"))
-  g+scale_fill_discrete(labels = c("Others", "Female","Male"))
+               axis.text = element_text(face= "bold"),
+               axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+  g+scale_fill_discrete(labels = c("Both Sexes", "Female","Male")) 
   
   
   
@@ -385,7 +383,7 @@ for(i in 1:length(developed$Country.Codes)){
 }
 
 g1 <- ggplot(df[deve,],aes(x=index,y=Death_Rate,color=gender))+geom_point()+coord_cartesian(ylim = c(0, limit))
-g1 <- g1+ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+xlab("Developed Countries")
+g1 <- g1+ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+xlab("Developed Countries")+scale_colour_manual(labels = c("Both Sexes", "Female", "Male"), values = c("Red", "Green","Blue"))
 
 for(i in 1:length(developing$Country.Codes)){
   x<-which(df$index==developing$Country.Codes[i])
@@ -395,97 +393,13 @@ for(i in 1:length(developing$Country.Codes)){
 }
 
 g2 <- ggplot(df[deving,],aes(x=index,y=Death_Rate,color=gender,ylim=limit))+geom_point()+coord_cartesian(ylim = c(0, limit))
-g2 <- g2+ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+xlab("Developing Countries")
+g2 <- g2+ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+xlab("Developing Countries")+scale_colour_manual(labels = c("Both Sexes", "Female", "Male"), values = c("Red", "Green","Blue"))
 
 library("gridExtra")
 grid.arrange(g1, g2, nrow = 2)
 ```
 
 Outlier values in death rate due to Poisoning are seen in India ,Kyrgyzstan, Ukraine, Kazakhstan and Russia These are the outlier countries, also the HDI doesn't have much effect on death due to poisoning. Possible reasonwould be that the Agriculture based economies, easy availability of pesticides, poverty related socioeconomic problems, lack of adequate protective clothing, and limited treatment facilities are some of the factors contributing to the high morbidity and mortality due to poisoning. The highest number of cases among both children and adults occur in Africa and Southeast Asia, where food is more often prepared with unclean water or cannot be properly produced and stored.
-
-Comparing Pie charts of Various developed and developing Countries
-
-```{r}
-#newdf <- matrix(nrow = 8154,ncol = 5)
-load("/Users/pj/Library/CloudStorage/OneDrive-IITKanpur/IITK sem 3/MTH208A/group-project-20/FinalData/Death rates/Final_data_3.Rdata")
-(do.call(rbind,Final_data_corrected_2))
-library(plotly)
-newdf <- do.call(rbind,Final_data_corrected_2)
-
-newdf1 <- subset(newdf,country == "United States of America")
-newdf2 <- newdf1[,-2]
-newdf3 <- data.frame(matrix(nrow=18,ncol=4))
-
-for(i in 1:18){
-  newdf3[i,2] <- newdf2[i*3-2,2] + newdf2[i*3-1,2] + newdf2[i*3,2]
-}
-newdf3[,1] = newdf2[1:18,1]
-newdf3[,3] = newdf2[1:18,3]
-newdf3[,4] = newdf2[1:18,4]
-colnames(newdf3) <- colnames(newdf2)
-
-library(httr)
-library(jsonlite)
-#Using API to extract data from WHO website
-res <- GET("https://ghoapi.azureedge.net/api/Indicator?$filter=contains(IndicatorName,%20%27Death%27)")
-data <- res$content
-data <- rawToChar(data)
-data <- fromJSON(data)
-i<-array(c(49,50,51,52 ,53,54,55,57,58,59,60,61,62,63,64,65,66 ,74))
-causeName <- data[["value"]]$IndicatorName[i]
-d <- as.data.frame(causeName,nrow = 18)
-                   new_df <- cbind(newdf3,d)
-                   
-                   fig <- plot_ly(new_df,labels = causeName, values = new_df$Death_Rate,type = 'pie')
-                   fig <- fig %>% layout(title = paste0('Different Type of Death Causes of America'),
-                                         xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
-                                         yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
-                   fig
-                   
-```
-
-```{r}
-#newdf <- matrix(nrow = 8154,ncol = 5)
-load("/Users/pj/Library/CloudStorage/OneDrive-IITKanpur/IITK sem 3/MTH208A/group-project-20/FinalData/Death rates/Final_data_3.Rdata")
-(do.call(rbind,Final_data_corrected_2))
-library(plotly)
-newdf <- do.call(rbind,Final_data_corrected_2)
-
-newdf1 <- subset(newdf,country == "India")
-newdf2 <- newdf1[,-2]
-newdf3 <- data.frame(matrix(nrow=18,ncol=4))
-
-for(i in 1:18){
-  newdf3[i,2] <- newdf2[i*3-2,2] + newdf2[i*3-1,2] + newdf2[i*3,2]
-}
-newdf3[,1] = newdf2[1:18,1]
-newdf3[,3] = newdf2[1:18,3]
-newdf3[,4] = newdf2[1:18,4]
-colnames(newdf3) <- colnames(newdf2)
-
-library(httr)
-library(jsonlite)
-#Using API to extract data from WHO website
-res <- GET("https://ghoapi.azureedge.net/api/Indicator?$filter=contains(IndicatorName,%20%27Death%27)")
-data <- res$content
-data <- rawToChar(data)
-data <- fromJSON(data)
-i<-array(c(49,50,51,52 ,53,54,55,57,58,59,60,61,62,63,64,65,66 ,74))
-causeName <- data[["value"]]$IndicatorName[i]
-d <- as.data.frame(causeName,nrow = 18)
-                   new_df <- cbind(newdf3,d)
-                   
-                   fig <- plot_ly(new_df,labels = causeName, values = new_df$Death_Rate,type = 'pie')
-                   fig <- fig %>% layout(title = paste0('Different Type of Death Causes of India'),
-                                         xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
-                                         yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
-                   fig
-                   
-                   
-                   
-```
-
-Percentage of Premature and low birth rate is higher in developing countries than developing countries. Possible reasons for that are Substance abuse before pregnancy and malnutrition in developing countries. We have done this analysis over many countries but shown pie chart of only two.
 
 ## Conclusion {style="font-family: \"Monospace , Monaco;"}
 
